@@ -1,20 +1,44 @@
-# name: YOUR NAME HERE
-# date:
+# name: Elisabeth Oguntona
+# date: 05/15/2025
 # description: Implementation of CRUD operations with DynamoDB — CS178 Lab 10
-# proposed score: 0 (out of 5) -- if I don't change this, I agree to get 0 points.
+# proposed score: 5
 
 import boto3
 
 # boto3 uses the credentials configured via `aws configure` on EC2
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('Movies')
+def get_table():
+    """Return a reference to the DynamoDB Movies table."""
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    return dynamodb.Table("Movies")
+
+def print_movie(movie):
+    title = movie.get("Title", "Unknown Title")
+    year = movie.get("Year", "Unknown Year")
+    ratings = movie.get("Ratings", "No ratings")
+    genre = movie.get("Genre", "No genre listed")
+
+    print(f"  Title  : {title}")
+    print(f"  Year   : {year}")
+    print(f"  Ratings: {ratings}")
+    print(f"  Genre  : {genre}")
+    print()
+
+
 
 def create_movie():
-    """
-    Prompt user for a Movie Title.
-    Add the movie to the database with the title and an empty Ratings list.
-    """
-    print("creating a movie")
+    title = input("Enter movie title: ")
+    year = input("Enter year: ")
+    table = get_table()
+    table.put_item(
+        Item={
+            'Title': title,
+            'Year': year,
+            'Ratings': []
+        }
+    )
+    print(f"'{title}' added successfully!")
 
 def print_all_movies():
     """Scan the entire Movies table and print each item."""
